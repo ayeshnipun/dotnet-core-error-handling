@@ -1,4 +1,5 @@
 using ProductAPI.EndPoints;
+using ProductAPI.Middleware;
 using ProductAPI.Services;
 using ProductAPI.Services.Interfaces;
 
@@ -13,6 +14,9 @@ builder.Services.AddScoped<EndPointsWithDI>();
 
 var app = builder.Build();
 
+//Error handling
+app.UseMiddleware<CustomExceptionHandlingMiddleware>(); 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -25,8 +29,9 @@ app.UseHttpsRedirection();
 using (var scope = app.Services.CreateScope())
 {
     var service = scope.ServiceProvider.GetService<EndPointsWithDI>();
-    service.SaveProduct(app);
     service.GetProducts(app);
+    service.GetProductByCategory(app);
+    service.SaveProduct(app);
 }
 
 app.Run();

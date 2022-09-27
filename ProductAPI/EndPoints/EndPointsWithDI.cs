@@ -26,6 +26,18 @@ namespace ProductAPI.EndPoints
                 return products;
             }).WithName("GetProducts");
         }
+        
+        public void GetProductByCategory(WebApplication app)
+        {
+            app.MapGet("/GetProductByCategory", (string name) =>
+            {
+                _logger.LogInformation("Starting the API Call GetProducts");
+                var productName = _productService.GetProductByCategoryAsync(name);
+
+                _logger.LogInformation("Received product name {Response}", JsonConvert.SerializeObject(productName));
+                return productName;
+            }).WithName("GetProductByCategory");
+        }
 
         public void SaveProduct(WebApplication app)
         {
