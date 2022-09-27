@@ -2,6 +2,7 @@ using ProductAPI.EndPoints;
 using ProductAPI.Middleware;
 using ProductAPI.Services;
 using ProductAPI.Services.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddScoped<EndPointsWithDI>();
+
+// remove default logging providers
+builder.Logging.ClearProviders();
+// Serilog configuration        
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+// Register Serilog
+builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 
@@ -35,8 +45,3 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
